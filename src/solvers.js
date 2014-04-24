@@ -328,9 +328,6 @@ window.findNQueensSolution = function(n) {
 
 // Implementation using bit-shifting and recursion
 window.countNQueensSolutions = function(n) {
-  var ld = 0;
-  var rd = 0;
-  var col = 0;
   var solutionCount = 0;
   var bit = 0;
   var all = Math.pow(2, n) - 1;
