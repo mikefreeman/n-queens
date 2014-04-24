@@ -282,45 +282,73 @@ window.findNQueensSolution = function(n) {
 
 
 // Implementation using 1-D arrays
-window.countNQueensSolutions = function(n) {
-  var hasConflict = function(board, currentRow, col) {
-    var major = col - currentRow;
-    var minor = col + currentRow;
-    for (var i = 0; i < currentRow; i++) {
-      if (board[i] === major || board[i] === minor || board[i] === col) {
-        return true;
-      }
-      major++;
-      minor--;
-    }
+// window.countNQueensSolutions = function(n) {
+//   var hasConflict = function(board, currentRow, col) {
+//     var major = col - currentRow;
+//     var minor = col + currentRow;
+//     for (var i = 0; i < currentRow; i++) {
+//       if (board[i] === major || board[i] === minor || board[i] === col) {
+//         return true;
+//       }
+//       major++;
+//       minor--;
+//     }
 
-    return false;
+//     return false;
+//   };
+
+//   var board = [];
+//   board.currentRow = 0;
+//   var queue = [board];
+//   var newBoard = undefined;
+//   var solutionCount = undefined;
+//   var solutions = [];
+
+//   while (queue.length) {
+//     board = queue.shift();
+//     for (var i = 0; i < n; i++) {
+//       if (!hasConflict(board, board.currentRow, i)) { 
+//         newBoard = board.slice();
+//         newBoard[board.currentRow] = i;
+//         newBoard.currentRow = board.currentRow + 1;
+//         if (newBoard.currentRow === n) {
+//           solutions.push(newBoard);
+//         } else {
+//           queue.push(newBoard);
+//         }
+//       }
+//     }
+//   }
+
+//   solutionCount = solutions.length;
+//   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+//   return solutionCount;
+// };
+
+
+// Implementation using bit-shifting and recursion
+window.countNQueensSolutions = function(n) {
+  var ld = 0;
+  var rd = 0;
+  var col = 0;
+  var solutionCount = 0;
+  var bit = 0;
+  var all = Math.pow(2, n) - 1;
+
+  var recurse = function(ld, col, rd) {
+    if (col === all) {
+      solutionCount++;
+    } else {
+      var poss = ~(ld|col|rd) & all;
+      while (poss) {
+        bit = poss & -poss;
+        poss -= bit;
+        recurse((ld|bit)<<1, col|bit, (rd|bit)>>1);
+      }
+    }
   };
 
-  var board = [];
-  board.currentRow = 0;
-  var queue = [board];
-  var newBoard = undefined;
-  var solutionCount = undefined;
-  var solutions = [];
-
-  while (queue.length) {
-    board = queue.shift();
-    for (var i = 0; i < n; i++) {
-      if (!hasConflict(board, board.currentRow, i)) { 
-        newBoard = board.slice();
-        newBoard[board.currentRow] = i;
-        newBoard.currentRow = board.currentRow + 1;
-        if (newBoard.currentRow === n) {
-          solutions.push(newBoard);
-        } else {
-          queue.push(newBoard);
-        }
-      }
-    }
-  }
-
-  solutionCount = solutions.length;
+  recurse(0, 0, 0);
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
